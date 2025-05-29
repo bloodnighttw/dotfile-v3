@@ -1,0 +1,495 @@
+* {
+    font-family: 'Noto Sans Mono Bold', 'Noto Sans Mono CJK TC Bold', monospace;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+window#waybar {
+    background-color: rgba(43, 48, 59, 0.0);
+    transition-property: background-color;
+    transition-duration: .5s;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+/*
+window#waybar.empty {
+    background-color: transparent;
+}
+window#waybar.solo {
+    background-color: #FFFFFF;
+}
+*/
+
+window#waybar.termite {
+    background-color: #3F3F3F;
+}
+
+window#waybar.chromium {
+    background-color: #000000;
+    border: none;
+}
+
+button {
+    /* Use box-shadow instead of border so the text isn't offset */
+    box-shadow: inset 0 -3px transparent;
+    /* Avoid rounded borders under each button name */
+    border: none;
+    border-radius: 0;
+}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+button:hover {
+    background: inherit;
+    box-shadow: inset 0 -3px #ffffff;
+}
+
+/* you can set a style on hover for any module like this */
+#pulseaudio:hover {
+    background-color: #a37800;
+}
+
+#window:first-child {
+    background-color: #a37800;
+    color: #ffffff;
+    padding: 0 12px;
+}
+
+window#waybar.empty #window {
+   background-color: transparent;
+}
+
+#workspaces {
+    border-radius: 4px;
+    background-color: rgb(0, 105, 212);
+}
+
+#workspaces button {
+  box-shadow: none;
+  text-shadow: none;
+
+  color: #f1f1f1;
+  transition: all 0.5s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+}
+
+#workspaces button.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: #f1f1f1;
+  transition: all 0.3s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+}
+
+#workspaces button.active:first-child{
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+#workspaces button.active:last-child{
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+#workspaces button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transition: all 0.3s;
+}
+
+#workspaces button:hover:first-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+#workspaces button:hover:last-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+#mode {
+    background-color: #64727D;
+    box-shadow: inset 0 -3px #ffffff;
+}
+
+
+#clock,
+#battery,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#wireplumber,
+#custom-media,
+#tray,
+#mode,
+#idle_inhibitor,
+#scratchpad,
+#power-profiles-daemon,
+#mpd {
+    padding: 0px 12px;
+    color: #ffffff;
+}
+
+
+/* If workspaces is the leftmost module, omit left margin */
+.modules-left > widget:first-child > #workspaces {
+    margin-left: 0;
+}
+
+/* If workspaces is the rightmost module, omit right margin */
+.modules-right > widget:last-child > #workspaces {
+    margin-right: 0;
+}
+
+#clock {
+    background-color: #64727D;
+}
+
+#battery {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+#battery.charging, #battery.plugged {
+    color: #ffffff;
+    background-color: #26A65B;
+}
+
+@keyframes blink {
+    to {
+        background-color: #ffffff;
+        color: #000000;
+    }
+}
+
+/* Using steps() instead of linear as a timing function to limit cpu usage */
+#battery.critical:not(.charging) {
+    background-color: #f53c3c;
+    color: #ffffff;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: steps(12);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#power-profiles-daemon {
+    min-width: 16px;
+}
+
+#power-profiles-daemon.performance {
+    background-color: #f53c3c;
+    color: #ffffff;
+}
+
+#power-profiles-daemon.balanced {
+    background-color: #2980b9;
+    color: #ffffff;
+}
+
+#power-profiles-daemon.power-saver {
+    background-color: #2ecc71;
+    color: #000000;
+}
+
+label:focus {
+    background-color: #000000;
+}
+
+#cpu {
+    background-color: #2ecc71;
+    color: #000000;
+}
+
+#memory {
+    background-color: #9b59b6;
+}
+
+#disk {
+    background-color: #964B00;
+}
+
+#backlight {
+    background-color: #90b1b1;
+}
+
+#network {
+    background-color: #2980b9;
+}
+
+#network.disconnected {
+    background-color: #f53c3c;
+}
+
+#pulseaudio {
+    background-color: #f1c40f;
+    color: #000000;
+}
+
+#pulseaudio.muted {
+    background-color: #90b1b1;
+    color: #2a5c45;
+}
+
+#wireplumber {
+    background-color: #fff0f5;
+    color: #000000;
+}
+
+#wireplumber.muted {
+    background-color: #f53c3c;
+}
+
+#custom-media {
+    background-color: #66cc99;
+    color: #2a5c45;
+    min-width: 100px;
+}
+
+#custom-media.custom-spotify {
+    background-color: #66cc99;
+}
+
+#custom-media.custom-vlc {
+    background-color: #ffa000;
+}
+
+#temperature {
+    background-color: #f0932b;
+}
+
+#temperature.critical {
+    background-color: #eb4d4b;
+}
+
+#tray {
+    background-color: #2980b9;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: #eb4d4b;
+}
+
+#idle_inhibitor {
+    background-color: #2d3436;
+}
+
+#idle_inhibitor.activated {
+    background-color: #ecf0f1;
+    color: #2d3436;
+}
+
+#mpd {
+    background-color: #66cc99;
+    color: #2a5c45;
+}
+
+#mpd.disconnected {
+    background-color: #f53c3c;
+}
+
+#mpd.stopped {
+    background-color: #90b1b1;
+}
+
+#mpd.paused {
+    background-color: #51a37a;
+}
+
+#language {
+    background: #00b093;
+    color: #740864;
+    padding: 0 4px;
+    margin: 0 4px;
+    min-width: 16px;
+}
+
+#keyboard-state {
+    background: #97e1ad;
+    color: #000000;
+    padding: 0 0px;
+    margin: 0 5px;
+    min-width: 8px;
+}
+
+#keyboard-state > label {
+    padding: 0 5px;
+}
+
+#keyboard-state > label.locked {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+#scratchpad {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+#scratchpad.empty {
+	background-color: transparent;
+}
+
+#privacy {
+    padding: 0;
+}
+
+#privacy-item {
+    padding: 0 5px;
+    color: white;
+}
+
+#privacy-item.screenshare {
+    background-color: #cf5700;
+}
+
+#privacy-item.audio-in {
+    background-color: #1ca000;
+}
+
+#privacy-item.audio-out {
+    background-color: #0069d4;
+}
+
+#custom-spotify {
+    padding: 0 10px;
+    background-color: #1DB954;
+    color: black;
+}
+
+#custom-prev {
+    padding: 0 12px;
+    background-color: #1DB954;
+    color: black;
+}
+
+#custom-pause {
+    padding: 0 12px;
+    background-color: #1DB954;
+    color: black;
+}
+#custom-next {
+    padding: 0 12px;
+    background-color: #1DB954;
+    color: black;
+}
+
+#image {
+    border: #1DB954 solid 1px;
+    border-radius: 2px;
+}
+
+#custom-discord {
+    padding: 0 10px;
+    background-color: #7289DA;
+    color: black;
+}
+
+/* Progress bar classes */
+.progress-0 { background: linear-gradient(to right, #1DB954 0%, #4a7c59 0%); }
+.progress-1 { background: linear-gradient(to right, #1DB954 1%, #4a7c59 1%); }
+.progress-2 { background: linear-gradient(to right, #1DB954 2%, #4a7c59 2%); }
+.progress-3 { background: linear-gradient(to right, #1DB954 3%, #4a7c59 3%); }
+.progress-4 { background: linear-gradient(to right, #1DB954 4%, #4a7c59 4%); }
+.progress-5 { background: linear-gradient(to right, #1DB954 5%, #4a7c59 5%); }
+.progress-6 { background: linear-gradient(to right, #1DB954 6%, #4a7c59 6%); }
+.progress-7 { background: linear-gradient(to right, #1DB954 7%, #4a7c59 7%); }
+.progress-8 { background: linear-gradient(to right, #1DB954 8%, #4a7c59 8%); }
+.progress-9 { background: linear-gradient(to right, #1DB954 9%, #4a7c59 9%); }
+.progress-10 { background: linear-gradient(to right, #1DB954 10%, #4a7c59 10%); }
+.progress-11 { background: linear-gradient(to right, #1DB954 11%, #4a7c59 11%); }
+.progress-12 { background: linear-gradient(to right, #1DB954 12%, #4a7c59 12%); }
+.progress-13 { background: linear-gradient(to right, #1DB954 13%, #4a7c59 13%); }
+.progress-14 { background: linear-gradient(to right, #1DB954 14%, #4a7c59 14%); }
+.progress-15 { background: linear-gradient(to right, #1DB954 15%, #4a7c59 15%); }
+.progress-16 { background: linear-gradient(to right, #1DB954 16%, #4a7c59 16%); }
+.progress-17 { background: linear-gradient(to right, #1DB954 17%, #4a7c59 17%); }
+.progress-18 { background: linear-gradient(to right, #1DB954 18%, #4a7c59 18%); }
+.progress-19 { background: linear-gradient(to right, #1DB954 19%, #4a7c59 19%); }
+.progress-20 { background: linear-gradient(to right, #1DB954 20%, #4a7c59 20%); }
+.progress-21 { background: linear-gradient(to right, #1DB954 21%, #4a7c59 21%); }
+.progress-22 { background: linear-gradient(to right, #1DB954 22%, #4a7c59 22%); }
+.progress-23 { background: linear-gradient(to right, #1DB954 23%, #4a7c59 23%); }
+.progress-24 { background: linear-gradient(to right, #1DB954 24%, #4a7c59 24%); }
+.progress-25 { background: linear-gradient(to right, #1DB954 25%, #4a7c59 25%); }
+.progress-26 { background: linear-gradient(to right, #1DB954 26%, #4a7c59 26%); }
+.progress-27 { background: linear-gradient(to right, #1DB954 27%, #4a7c59 27%); }
+.progress-28 { background: linear-gradient(to right, #1DB954 28%, #4a7c59 28%); }
+.progress-29 { background: linear-gradient(to right, #1DB954 29%, #4a7c59 29%); }
+.progress-30 { background: linear-gradient(to right, #1DB954 30%, #4a7c59 30%); }
+.progress-31 { background: linear-gradient(to right, #1DB954 31%, #4a7c59 31%); }
+.progress-32 { background: linear-gradient(to right, #1DB954 32%, #4a7c59 32%); }
+.progress-33 { background: linear-gradient(to right, #1DB954 33%, #4a7c59 33%); }
+.progress-34 { background: linear-gradient(to right, #1DB954 34%, #4a7c59 34%); }
+.progress-35 { background: linear-gradient(to right, #1DB954 35%, #4a7c59 35%); }
+.progress-36 { background: linear-gradient(to right, #1DB954 36%, #4a7c59 36%); }
+.progress-37 { background: linear-gradient(to right, #1DB954 37%, #4a7c59 37%); }
+.progress-38 { background: linear-gradient(to right, #1DB954 38%, #4a7c59 38%); }
+.progress-39 { background: linear-gradient(to right, #1DB954 39%, #4a7c59 39%); }
+.progress-40 { background: linear-gradient(to right, #1DB954 40%, #4a7c59 40%); }
+.progress-41 { background: linear-gradient(to right, #1DB954 41%, #4a7c59 41%); }
+.progress-42 { background: linear-gradient(to right, #1DB954 42%, #4a7c59 42%); }
+.progress-43 { background: linear-gradient(to right, #1DB954 43%, #4a7c59 43%); }
+.progress-44 { background: linear-gradient(to right, #1DB954 44%, #4a7c59 44%); }
+.progress-45 { background: linear-gradient(to right, #1DB954 45%, #4a7c59 45%); }
+.progress-46 { background: linear-gradient(to right, #1DB954 46%, #4a7c59 46%); }
+.progress-47 { background: linear-gradient(to right, #1DB954 47%, #4a7c59 47%); }
+.progress-48 { background: linear-gradient(to right, #1DB954 48%, #4a7c59 48%); }
+.progress-49 { background: linear-gradient(to right, #1DB954 49%, #4a7c59 49%); }
+.progress-50 { background: linear-gradient(to right, #1DB954 50%, #4a7c59 50%); }
+.progress-51 { background: linear-gradient(to right, #1DB954 51%, #4a7c59 51%); }
+.progress-52 { background: linear-gradient(to right, #1DB954 52%, #4a7c59 52%); }
+.progress-53 { background: linear-gradient(to right, #1DB954 53%, #4a7c59 53%); }
+.progress-54 { background: linear-gradient(to right, #1DB954 54%, #4a7c59 54%); }
+.progress-55 { background: linear-gradient(to right, #1DB954 55%, #4a7c59 55%); }
+.progress-56 { background: linear-gradient(to right, #1DB954 56%, #4a7c59 56%); }
+.progress-57 { background: linear-gradient(to right, #1DB954 57%, #4a7c59 57%); }
+.progress-58 { background: linear-gradient(to right, #1DB954 58%, #4a7c59 58%); }
+.progress-59 { background: linear-gradient(to right, #1DB954 59%, #4a7c59 59%); }
+.progress-60 { background: linear-gradient(to right, #1DB954 60%, #4a7c59 60%); }
+.progress-61 { background: linear-gradient(to right, #1DB954 61%, #4a7c59 61%); }
+.progress-62 { background: linear-gradient(to right, #1DB954 62%, #4a7c59 62%); }
+.progress-63 { background: linear-gradient(to right, #1DB954 63%, #4a7c59 63%); }
+.progress-64 { background: linear-gradient(to right, #1DB954 64%, #4a7c59 64%); }
+.progress-65 { background: linear-gradient(to right, #1DB954 65%, #4a7c59 65%); }
+.progress-66 { background: linear-gradient(to right, #1DB954 66%, #4a7c59 66%); }
+.progress-67 { background: linear-gradient(to right, #1DB954 67%, #4a7c59 67%); }
+.progress-68 { background: linear-gradient(to right, #1DB954 68%, #4a7c59 68%); }
+.progress-69 { background: linear-gradient(to right, #1DB954 69%, #4a7c59 69%); }
+.progress-70 { background: linear-gradient(to right, #1DB954 70%, #4a7c59 70%); }
+.progress-71 { background: linear-gradient(to right, #1DB954 71%, #4a7c59 71%); }
+.progress-72 { background: linear-gradient(to right, #1DB954 72%, #4a7c59 72%); }
+.progress-73 { background: linear-gradient(to right, #1DB954 73%, #4a7c59 73%); }
+.progress-74 { background: linear-gradient(to right, #1DB954 74%, #4a7c59 74%); }
+.progress-75 { background: linear-gradient(to right, #1DB954 75%, #4a7c59 75%); }
+.progress-76 { background: linear-gradient(to right, #1DB954 76%, #4a7c59 76%); }
+.progress-77 { background: linear-gradient(to right, #1DB954 77%, #4a7c59 77%); }
+.progress-78 { background: linear-gradient(to right, #1DB954 78%, #4a7c59 78%); }
+.progress-79 { background: linear-gradient(to right, #1DB954 79%, #4a7c59 79%); }
+.progress-80 { background: linear-gradient(to right, #1DB954 80%, #4a7c59 80%); }
+.progress-81 { background: linear-gradient(to right, #1DB954 81%, #4a7c59 81%); }
+.progress-82 { background: linear-gradient(to right, #1DB954 82%, #4a7c59 82%); }
+.progress-83 { background: linear-gradient(to right, #1DB954 83%, #4a7c59 83%); }
+.progress-84 { background: linear-gradient(to right, #1DB954 84%, #4a7c59 84%); }
+.progress-85 { background: linear-gradient(to right, #1DB954 85%, #4a7c59 85%); }
+.progress-86 { background: linear-gradient(to right, #1DB954 86%, #4a7c59 86%); }
+.progress-87 { background: linear-gradient(to right, #1DB954 87%, #4a7c59 87%); }
+.progress-88 { background: linear-gradient(to right, #1DB954 88%, #4a7c59 88%); }
+.progress-89 { background: linear-gradient(to right, #1DB954 89%, #4a7c59 89%); }
+.progress-90 { background: linear-gradient(to right, #1DB954 90%, #4a7c59 90%); }
+.progress-91 { background: linear-gradient(to right, #1DB954 91%, #4a7c59 91%); }
+.progress-92 { background: linear-gradient(to right, #1DB954 92%, #4a7c59 92%); }
+.progress-93 { background: linear-gradient(to right, #1DB954 93%, #4a7c59 93%); }
+.progress-94 { background: linear-gradient(to right, #1DB954 94%, #4a7c59 94%); }
+.progress-95 { background: linear-gradient(to right, #1DB954 95%, #4a7c59 95%); }
+.progress-96 { background: linear-gradient(to right, #1DB954 96%, #4a7c59 96%); }
+.progress-97 { background: linear-gradient(to right, #1DB954 97%, #4a7c59 97%); }
+.progress-98 { background: linear-gradient(to right, #1DB954 98%, #4a7c59 98%); }
+.progress-99 { background: linear-gradient(to right, #1DB954 99%, #4a7c59 99%); }
+.progress-100 { background: #1DB954; }
+

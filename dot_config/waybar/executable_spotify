@@ -1,0 +1,178 @@
+#!/usr/bin/env python3
+
+import gi;
+gi.require_version('Playerctl', '2.0')
+
+from gi.repository import Playerctl, GLib
+import json
+import sys
+import signal
+import threading
+import time
+
+class WaybarSpotifyModule:
+    def __init__(self):
+        self.manager = Playerctl.PlayerManager()
+        self.player = None
+        self.main_loop = GLib.MainLoop()
+        self.current_track = None
+        self.last_progress = -1
+        self.last_status = None
+        
+        # Setup signal handlers for clean shutdown
+        signal.signal(signal.SIGINT, self.signal_handler)
+        signal.signal(signal.SIGTERM, self.signal_handler)
+        
+        # Connect to manager signals
+        self.manager.connect('name-appeared', self.on_player_appeared)
+        self.manager.connect('player-vanished', self.on_player_vanished)
+        
+        # Find existing Spotify player
+        for player_name in self.manager.props.player_names:
+            if 'spotify' in player_name.name.lower():
+                self.init_player(player_name)
+                break
+        
+        # Output initial state
+        self.output_waybar_data()
+
+    def signal_handler(self, signum, frame):
+        """Handle shutdown signals"""
+        self.main_loop.quit()
+        sys.exit(0)
+
+    def init_player(self, player_name):
+        """Initialize the Spotify player"""
+        try:
+            self.player = Playerctl.Player.new_from_name(player_name)
+            self.player.connect('metadata', self.on_metadata_changed)
+            self.player.connect('playback-status', self.on_status_changed)
+            self.output_waybar_data()
+        except Exception:
+            pass
+
+    def on_player_appeared(self, manager, player_name):
+        """Called when a new player appears"""
+        if 'spotify' in player_name.name.lower() and self.player is None:
+            self.init_player(player_name)
+
+    def on_player_vanished(self, manager, player):
+        """Called when a player disappears"""
+        if self.player and player.props.player_name == self.player.props.player_name:
+            self.player = None
+            self.current_track = None
+            self.output_waybar_data()
+
+    def on_metadata_changed(self, player, metadata):
+        """Called when track metadata changes"""
+        self.output_waybar_data()
+
+    def on_status_changed(self, player, status):
+        """Called when playback status changes"""
+        self.output_waybar_data()
+
+    def get_metadata(self):
+        """Get current metadata and progress"""
+        if not self.player:
+            return None
+            
+        try:
+            artist = self.player.get_artist() or "Unknown Artist"
+            title = self.player.get_title() or "Unknown Title"
+            status = str(self.player.get_property('status'))
+            
+            # Get progress
+            position_us = self.player.get_position()
+            position_sec = position_us / 1_000_000 if position_us else 0
+            
+            # Get track length
+            length_sec = 0
+            try:
+                metadata = self.player.props.metadata
+                if metadata:
+                    metadata_dict = dict(metadata)
+                    if 'mpris:length' in metadata_dict:
+                        length_variant = metadata_dict['mpris:length']
+                        if hasattr(length_variant, 'get_int64'):
+                            length_us = length_variant.get_int64()
+                        else:
+                            length_us = int(length_variant)
+                        length_sec = length_us / 1_000_000
+            except:
+                pass
+            
+            # Calculate progress as integer 0-100
+            progress = int((position_sec / length_sec * 100)) if length_sec > 0 else 0
+            progress = max(0, min(100, progress))
+            
+            return {
+                'artist': artist,
+                'song': title,
+                'progress': progress,
+                'status': status,
+                'playing': status == 'Playing'
+            }
+            
+        except Exception:
+            return None
+
+    def output_waybar_data(self):
+        """Output data in Waybar format"""
+        metadata = self.get_metadata()
+        
+        if metadata:
+            track_id = f"{metadata['artist']}:{metadata['song']}"
+            status = metadata['status']
+            
+            # Check if we need to update
+            should_update = (
+                self.current_track != track_id or
+                self.last_status != status or
+                abs(metadata['progress'] - self.last_progress) >= 1
+            )
+            
+            if should_update:
+                self.current_track = track_id
+                self.last_progress = metadata['progress']
+                self.last_status = status
+                
+                waybar_output = {
+                    "text": f"{metadata['artist']} - {metadata['song']}",
+                    "tooltip": f"{metadata['artist']} - {metadata['song']}",
+                    "class": "playing" if metadata['playing'] else "paused",
+                    "class": f"progress-{metadata['progress']}"
+                }
+                
+                print(json.dumps(waybar_output), flush=True)
+        else:
+            # No Spotify or not playing
+            waybar_output = {
+                "text": "🎵 Spotify",
+                "tooltip": "Spotify not running",
+                "class": "stopped",
+                "percentage": 0
+            }
+            print(json.dumps(waybar_output), flush=True)
+
+    def start_progress_updates(self):
+        """Start periodic progress updates"""
+        def update_progress():
+            while True:
+                if self.player and self.current_track:
+                    self.output_waybar_data()
+                time.sleep(1)
+                
+        progress_thread = threading.Thread(target=update_progress, daemon=True)
+        progress_thread.start()
+
+    def run(self):
+        """Run the Waybar module"""
+        self.start_progress_updates()
+        try:
+            self.main_loop.run()
+        except KeyboardInterrupt:
+            pass
+
+if __name__ == "__main__":
+    module = WaybarSpotifyModule()
+    module.run()
