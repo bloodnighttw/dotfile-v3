@@ -17,4 +17,18 @@ return {
   default_cursor_style = "BlinkingBar",
   animation_fps = 240,	
   cursor_blink_rate = 300,
+  keys = {
+    -- Switch to tab 1-9 with Alt+1 .. Alt+9
+    {key="1", mods="ALT", action=wezterm.action{ActivateTab=0}},
+    {key="2", mods="ALT", action=wezterm.action{ActivateTab=1}},
+    {key="3", mods="ALT", action=wezterm.action{ActivateTab=2}},
+    {key="4", mods="ALT", action=wezterm.action{ActivateTab=3}},
+    {key="5", mods="ALT", action=wezterm.action{ActivateTab=4}},
+    {key="6", mods="ALT", action=wezterm.action{ActivateTab=5}},
+    {key="7", mods="ALT", action=wezterm.action{ActivateTab=6}},
+    {key="8", mods="ALT", action=wezterm.action{ActivateTab=7}},
+    {key="9", mods="ALT", action=wezterm.action{ActivateTab=8}},
+    -- Alt+0 usually means "last tab"
+    {key="0", mods="ALT", action=wezterm.action{ActivateTab=9}},
+  }
 }
